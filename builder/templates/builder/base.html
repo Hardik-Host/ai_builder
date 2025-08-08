@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>{% block title %}AI Website Builder{% endblock %}</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+    <style>
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="page-wrapper">
+        <header id="header">
+            <h1><a href="/">Landed</a></h1>
+            <nav>
+                <ul>
+                    {% if user.is_authenticated %}
+                    {% if user.role.name == 'Editor' or user.role.name == 'Admin' %}
+                        <li><a href="{% url 'create_website' %}">Generate</a></li>
+                    {% endif %}
+                    {% if user.role.name == 'Admin'%}
+                    <li><a href="/admin/">Admin</a></li>
+                    {%endif%}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+
+        <div id="main" class="wrapper style1">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

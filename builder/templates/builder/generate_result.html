@@ -1,0 +1,95 @@
+{% extends "builder/base.html" %}
+
+{% block content %}
+<header class="major">
+    <h2 id="website-title">{{ website.title }}</h2>
+    <p>Industry: <span id="website-industry">{{ website.industry }}</span></p>
+    
+    <form method="get">
+        <label for="website">Select another website:</label>
+        <select name="website" id="website">
+            {% for site in websites %}
+                <option value="{{ site.id }}" data-created-at="{{ site.created_at }}" {% if site.id == website.id %}selected{% endif %}>
+                    {{ site.title }} <!-- We'll format the date using JavaScript -->
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</header>
+
+<section id="content">
+    {% if user.role.name == 'Editor' or user.role.name == 'Admin' %}
+    <hr>
+    <div class="section-header">
+            <a href="#" class="button small" id="edit-btn">✏️ Edit</a>
+            <a href="#" class="button small" id="delete-btn">🗑️ Delete</a>
+    </div>
+    <hr>
+    {% endif %}
+    <pre id="raw-content" style="white-space: pre-wrap; padding: 1em;">{{ result.raw }}</pre>
+</section>
+
+<!-- Pass full websites JSON for JS -->
+{{ websites|json_script:"websites-data" }}
+
+<script>
+    const websitesData = JSON.parse(document.getElementById('websites-data').textContent);
+    const selectElement = document.getElementById('website');
+
+    const websiteTitle = document.getElementById('website-title');
+    const websiteIndustry = document.getElementById('website-industry');
+    const rawContent = document.getElementById('raw-content');
+    const editBtn = document.getElementById('edit-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString("en-US", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function updatePage(site) {
+        websiteTitle.textContent = site.title;
+        websiteIndustry.textContent = site.industry;
+
+        // Update raw content: if raw exists in content_json, else stringify whole content_json
+        if (site.content_json && site.content_json.raw) {
+            rawContent.textContent = site.content_json.raw;
+        } else if (site.content_json) {
+            rawContent.textContent = JSON.stringify(site.content_json, null, 2);
+        } else {
+            rawContent.textContent = '';
+        }
+
+        // Update Edit/Delete URLs if buttons exist
+        if (editBtn) {
+            editBtn.href = `/websites/${site.id}/edit/`;
+        }
+        if (deleteBtn) {
+            deleteBtn.href = `/websites/${site.id}/delete/`;
+        }
+    }
+
+    // Format dates for each option in the dropdown
+    const options = selectElement.querySelectorAll('option');
+    options.forEach(option => {
+        const createdAt = option.getAttribute('data-created-at');
+        const formattedDate = formatDate(createdAt);
+        option.textContent = `${option.textContent} (${formattedDate})`;
+    });
+
+    // Initial load with current selected site
+    const initialSite = websitesData.find(s => s.id === parseInt(selectElement.value));
+    if (initialSite) updatePage(initialSite);
+
+    // On dropdown change update dynamically
+    selectElement.addEventListener('change', function() {
+        const selectedSite = websitesData.find(s => s.id === parseInt(this.value));
+        if (selectedSite) updatePage(selectedSite);
+    });
+</script>
+
+{% endblock %}

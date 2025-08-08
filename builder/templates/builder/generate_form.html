@@ -1,0 +1,40 @@
+{% extends "builder/base.html" %}
+{% block content %}
+<header class="major">
+                    <h2>AI Website Content Generator</h2>
+                    <p>Fill out the form below and let AI generate your website content</p>
+                </header>
+
+                <!-- Content -->
+                <section id="content">
+                    <form method="post" action="{% url 'create_website' %}">
+                        {% csrf_token %}
+                        <div class="row gtr-uniform">
+                            <div class="col-6 col-12-xsmall">
+                                <label for="business">Business Name</label>
+                                <input type="text" name="business" id="business" placeholder="e.g. Tech World" required />
+                            </div>
+
+                            <div class="col-6 col-12-xsmall">
+                                <label for="industry">Industry</label>
+                                <input type="text" name="industry" id="industry" placeholder="e.g. Software Development" required />
+                            </div>
+                            <input type="hidden" value="{{id}}" name="id">
+                            <div class="col-12">
+                                <ul class="actions">
+                                    <li><input type="submit" value="Generate Content" class="primary" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const business = "{{ business|escapejs }}";
+                        const industry = "{{ industry|escapejs }}";
+
+                        if (business) document.querySelector('input[name="business"]').value = business;
+                        if (industry) document.querySelector('input[name="industry"]').value = industry;
+                    });
+                </script>
+                {% endblock %}
