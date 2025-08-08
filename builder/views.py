@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import WebsiteSerializer
 
-openai.api_key = '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'
+openai.api_key = 'Your_secret_key'
 openai.api_base = "https://api.groq.com/openai/v1"
 
 User = get_user_model()
