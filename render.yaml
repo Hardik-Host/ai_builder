@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: builder
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn myproject.wsgi:application
+    envVars:
+      - key: mongodb+srv://SxHardik:4tbsLLkm011wIioS@cluster0.awc90tk.mongodb.net/?tls=true&readPreference=primary
+        sync: false
+      - key: django-insecure-j(%vuqguqfzr1yce4j%m0d&j#&)4)kz&&rc1(^=83$rb)xy_02
+        generateValue: true
+      - key: DEBUG
+        value: false

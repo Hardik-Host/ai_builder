@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import WebsiteSerializer
 
-openai.api_key = 'Your_secret_key'
+openai.api_key = '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'
 openai.api_base = "https://api.groq.com/openai/v1"
 
 User = get_user_model()
@@ -164,9 +164,10 @@ def view_website(request):
             'Content-Type': 'application/json',
         }
     )
-
     if response.status_code == 200:
         website_data = response.json()
+    else:
+        website_data = {}
 
     return render(request, 'builder/generate_result.html', {
         'websites': website_data,
