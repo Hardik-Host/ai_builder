@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j(%vuqguqfzr1yce4j%m0d&j#&)4)kz&&rc1(^=83$rb)xy_02'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-local-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'ai_builder',
         'ENFORCE_SCHEMA': True,
         'CLIENT': {
-            'host': 'mongodb+srv://SxHardik:4tbsLLkm011wIioS@cluster0.awc90tk.mongodb.net/?tls=true&readPreference=primary',
+            'host': os.environ.get('DATABASE_URL'),
             'retryWrites': True,
         }
     }
